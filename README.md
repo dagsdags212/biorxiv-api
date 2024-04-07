@@ -6,9 +6,8 @@ A command-line interface for retrieving preprint information from bioRxiv.
     - [x] Author
     - [x] Article
 - [ ] command line interface
-- [ ] create tree object for navigating the HTML/XML document
-- [ ] write Enum classes to represent `colletions`
-- [ ] interface for sending HTTP requests to biorxiv server
-    - [ ] sorted by collection
+- [x] create tree object for navigating the HTML/XML document
+- [ ] write Enum classes
+    - [ ] `Collections` to restrict valid request URLs
 - [ ] command line parser for providing program arguments
 - [ ] write unit tests :(
