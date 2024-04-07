@@ -1,9 +1,10 @@
 from dataclasses import dataclass
+from typing import Optional
 import pandas as pd
 
 @dataclass
 class Author:
-    first_name: str
+    first_name: Optional[str]
     surname: str
 
     def __post_init__(self) -> None:
@@ -11,18 +12,24 @@ class Author:
         self.surname = self.surname.title()
 
     def __str__(self) -> str:
-        return f"{self.first_name} {self.surname}"
+        if self.first_name and self.surname:
+            return f"{self.first_name} {self.surname}"
+        return ""
 
     def __repr__(self) -> str:
-        return f"{self.first_name} {self.surname}"
+        if self.first_name and self.surname:
+            return f"{self.first_name} {self.surname}"
+        return "" 
 
 @dataclass
 class Article:
-    title: str
+    title: Optional[str]
     authors: list[Author]
     url: str
 
     def __post_init__(self) -> None:
+        if self.title is None: 
+            return
         chars_per_line = 6
         title = ""
         tokens = self.title.split(" ")
@@ -43,7 +50,7 @@ class Article:
 
     def to_series(self) -> pd.Series:
         """Returns a pandas Series containing class attributes."""
-        first_author = str(self.authors[0])
+        first_author = self.authors[0].surname
         d = [self.title, f"{first_author} et al.", self.url]
         index = ["title", "authors", "url"]
         return pd.Series(d, index)

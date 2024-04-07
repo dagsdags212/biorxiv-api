@@ -28,3 +28,9 @@ class Collection(Enum):
     SYNTHETIC_BIOLOGY               = "synthetic-biology"
     ZOOLOGY                         = "zoology"
 
+    def __repr__(self) -> str:
+        return self.value
+
+    def __str__(self) -> str:
+        return self.value
+
