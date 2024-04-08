@@ -17,26 +17,37 @@ class MainParser(HTMLParser):
     def __init__(self, resp: Response, tree) -> None:
         super().__init__(tree)
         self.resp = resp
-        self.soup = None
+        self.soup = []
         self._generate_soup()
+
+    @property
+    def data(self) -> list[Article]:
+        """Parses a list of Soup objects and returns a list of Article objects."""
+        articles = []
+        n_soup = len(self.soup)
+        for i, soup in enumerate(self.soup):
+            print(f"Parsing article {i} of {n_soup}...")
+            d = self._extract_page_content(soup)
+            articles.extend(d)
+        return articles
 
     def _generate_soup(self) -> None:
         """Generates a BS4 object from the response body."""
-        html = self.resp.text
-        soup = BeautifulSoup(html, self.ptype)
-        self.soup = soup
+        for resp in self.resp:
+            html = resp.text
+            soup = BeautifulSoup(html, self.ptype)
+            self.soup.append(soup)
 
-    def extract_articles(self, n: int=10):
+    def _extract_page_content(self, soup):
         """
         Extracts `n` articles from the stored soup object.
         Returns a list of Articles.
         """
         TREE = self.tree
-        soup = self.soup
         data = []
         # extract the nodes containing pertinent article information
         article_list = soup.select(TREE["article_list"]["root"])
-        articles = article_list[0].find_all("li")[:n]
+        articles = article_list[0].find_all("li")
         # extract fields for each article
         for article in articles:
             # extract title and doi
@@ -56,4 +67,3 @@ class MainParser(HTMLParser):
 
         return data
 
-   

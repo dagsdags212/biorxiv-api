@@ -1,10 +1,9 @@
 import argparse
-from bs4 import BeautifulSoup
 from tabulate import tabulate
 # custom modules
 from api import BiorxivApi
-from classes import Author, Article, ArticleTable
-from parser import HTMLParser, MainParser
+from classes import ArticleTable
+from parser import MainParser
 from trees import TREE
 
 parser = argparse.ArgumentParser(
@@ -13,17 +12,17 @@ parser = argparse.ArgumentParser(
 )
 
 parser.add_argument("field", type=str)
-parser.add_argument("-c", "--count", type=int)
+parser.add_argument("-p", "--pages", type=int)
 args = parser.parse_args()
 
 def main() -> None:
     field = args.field.lower()
-    count = args.count if args.count else 10
+    n_pages = args.pages if args.pages else 1
     api = BiorxivApi(field)
-    if api.fetch() <= 200:
+    if api.fetch(n_pages) <= 200:
         resp = api.response
         parser = MainParser(resp, TREE)
-        data = parser.extract_articles(count)
+        data = parser.data
         df = ArticleTable(data).to_df()
         table = tabulate(df, tablefmt="pipe", headers="keys", numalign="center")
         print(table)

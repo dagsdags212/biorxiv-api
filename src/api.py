@@ -1,3 +1,4 @@
+from time import sleep
 from enums import Collection
 
 class BiorxivApi:
@@ -7,7 +8,7 @@ class BiorxivApi:
     def __init__(self, field: Collection) -> None:
         self.field = field.lower()
         self.url = None
-        self.response = None
+        self.response = []
         if self.field in Collection:
             self._compose_url()
         else:
@@ -18,7 +19,7 @@ class BiorxivApi:
         url = f"{self.BASE_URL}/collection/{self.field}"
         self.url = url
 
-    def fetch(self) -> str:
+    def fetch(self, n_pages=1) -> str:
         """
         Builds a query url based on the given field and sends a request
         to the bioRxiv server.
@@ -26,8 +27,14 @@ class BiorxivApi:
         Returns a status code upon receiving a valid Response object.
         """
         import requests
-        resp = requests.get(self.url)
-        resp.raise_for_status()
-        self.response = resp
+        print("Sending a GET request to server...")
+        for page in range(n_pages):
+            payload = {"page": page}
+            print(f"Retrieving page {page+1} of {n_pages}...")
+            resp = requests.get(self.url, payload)
+            resp.raise_for_status()
+            self.response.append(resp)
+            sleep(0.25)
+        print("All responses have been collected!")
         return resp.status_code
 
