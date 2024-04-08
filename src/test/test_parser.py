@@ -23,8 +23,8 @@ class TestParser:
     def test_extract_articles(self) -> None:
         """Expect to return a list of Article objects with `n` elements."""
         api = BiorxivApi("genetics")
-        api.fetch()
+        n = 2
+        api.fetch(2)
         parser = MainParser(api.response, TREE)
-        n = 5
-        articles = parser.extract_articles(n)
-        assert len(articles) == n
+        articles = parser.data
+        assert len(articles) == (n * 10)

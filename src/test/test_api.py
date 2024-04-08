@@ -30,6 +30,6 @@ class TestBiorxivApi:
         api = BiorxivApi(field)
         api.fetch()
         resp = api.response
-        assert isinstance(resp, Response)
-        assert hasattr(resp, "text")
+        assert isinstance(resp[0], Response)
+        assert hasattr(resp[0], "text")
 
