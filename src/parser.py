@@ -26,7 +26,6 @@ class MainParser(HTMLParser):
         articles = []
         n_soup = len(self.soup)
         for i, soup in enumerate(self.soup):
-            print(f"Parsing article {i} of {n_soup}...")
             d = self._extract_page_content(soup)
             articles.extend(d)
         return articles
