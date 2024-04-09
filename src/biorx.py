@@ -1,6 +1,5 @@
-import argparse
+import asyncio
 from tabulate import tabulate
-import pandas as pd
 # custom modules
 from api import BiorxivApi
 from classes import ArticleTable
@@ -14,7 +13,9 @@ def main() -> None:
     field = args.field.lower()
     n_pages = args.pages if args.pages else 1
     api = BiorxivApi(field)
-    if api.fetch(n_pages) <= 200:
+    # collect responses from concurrent requests
+    response = asyncio.run(api.fetch(n_pages)) 
+    if len(response) > 0:
         resp = api.response
         parser = MainParser(resp, TREE)
         data = parser.data

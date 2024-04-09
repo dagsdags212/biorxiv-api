@@ -1,4 +1,5 @@
-from time import sleep
+import asyncio
+import httpx
 from enums import Collection
 
 class BiorxivApi:
@@ -19,22 +20,26 @@ class BiorxivApi:
         url = f"{self.BASE_URL}/collection/{self.field}"
         self.url = url
 
-    def fetch(self, n_pages=1) -> str:
+    async def _get(self, client: httpx.AsyncClient, params: dict) -> httpx.Response:
+        """Sends an asynchronous request to the server."""
+        resp = await client.get(self.url, params=params)
+        resp.raise_for_status()
+        return resp
+
+    async def fetch(self, n_pages=1) -> str:
         """
         Builds a query url based on the given field and sends a request
         to the bioRxiv server.
         
         Returns a status code upon receiving a valid Response object.
         """
-        import requests
-        print("Sending a GET request to server...")
-        for page in range(n_pages):
-            payload = {"page": page}
-            print(f"Retrieving page {page+1} of {n_pages}...")
-            resp = requests.get(self.url, payload)
-            resp.raise_for_status()
-            self.response.append(resp)
-            sleep(0.25)
+        print("Fetching data from server...")
+        async with httpx.AsyncClient() as client:
+            response = await asyncio.gather(
+                *[self._get(client, {"page": i}) for i in range(n_pages)]
+            )
+            self.response = response
         print("All responses have been collected!")
-        return resp.status_code
+            
+        return response
 
