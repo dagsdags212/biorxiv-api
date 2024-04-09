@@ -1,3 +1,4 @@
+import asyncio
 from pytest import raises
 from api import BiorxivApi
 
@@ -25,10 +26,10 @@ class TestBiorxivApi:
 
     def test_response(self) -> None:
         """Expect the class instance to contain a Response object."""
-        from requests import Response
+        from httpx import Response
         field = "bioinformatics"
         api = BiorxivApi(field)
-        api.fetch()
+        _ = asyncio.run(api.fetch(2))
         resp = api.response
         assert isinstance(resp[0], Response)
         assert hasattr(resp[0], "text")

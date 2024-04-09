@@ -1,3 +1,4 @@
+import asyncio
 from pytest import raises
 from parser import MainParser
 from api import BiorxivApi
@@ -24,7 +25,7 @@ class TestParser:
         """Expect to return a list of Article objects with `n` elements."""
         api = BiorxivApi("genetics")
         n = 2
-        api.fetch(2)
+        _ = asyncio.run(api.fetch(n))
         parser = MainParser(api.response, TREE)
         articles = parser.data
         assert len(articles) == (n * 10)
