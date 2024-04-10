@@ -44,13 +44,11 @@ class BiorxivApi:
         
         Returns a list of httpx Response objects.
         """
-        print("Fetching article list from server...")
         async with httpx.AsyncClient() as client:
             response = await asyncio.gather(
                 *[self._get(client, self.root_url, {"page": i}) for i in range(self.n_pages)]
             )
             self.collection_response = response
-        print("Done!")
 
     def _extract_article_urls(self) -> None:
         """Parses a list of response objects to extract the article url."""
@@ -63,13 +61,11 @@ class BiorxivApi:
         for each article is stored in the `article_urls` attribute. Response
         objects are stored in `content_response` attribute.
         """
-        print("Fetching content for each article...")  
         async with httpx.AsyncClient() as client:
             response = await asyncio.gather(
                 *[self._get(client, url) for url in self.article_urls]
             )
             self.content_response = response
-        print("Done!")
 
     def _extract_article_content(self) -> None:
         parser = ContentParser(self.content_response)

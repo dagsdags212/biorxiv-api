@@ -29,6 +29,7 @@ class Article:
     abstract: str           = ""
     authors: list[Author]   = field(default_factory=list)
     doi_url: str            = ""
+    download_url: str       = ""
 
     def __post_init__(self) -> None:
         if self.title is None:
@@ -49,8 +50,13 @@ class Article:
         return {
             "title": self.title,
             "authors": [str(author) for author in self.authors],
-            "url": self.doi_url,
+            "doi_url": self.doi_url,
+            "download_url": self.download_url
         }
+
+    def to_csv(self) -> str:
+        authors_str = "|".join([str(author) for author in self.authors])
+        return f"{self.title},{authors_str},{self.doi_url}"
 
     def to_series(self) -> pd.Series:
         """Returns a pandas Series containing class attributes."""

@@ -1,43 +1,46 @@
-from sys import exit
+import sys
+import json
 from tabulate import tabulate
 # custom modules
 from api import BiorxivApi
+from ArgumentParser import arg_parser, process_args
 from classes import ArticleTable
-from ArgumentParser import arg_parser
-
 
 def main() -> None:
+    """
+    Entry point for the CLI tool. Processes given arguments, instantiates an API
+    object, and prints out a filtered table containing article information.
+    """
     # parse args into a dictionary
-    args = arg_parser.parse_args()
-    field = args.field.lower()
-    n_pages = args.pages if args.pages else 1
+    args = process_args(arg_parser)
     # create api instance
-    api = BiorxivApi(field, n_pages)
+    if args.verbose:
+        print("Fetching list of articles...")
+    api = BiorxivApi(args.field, args.pages)
     # extract list of articles and store into a dataframe
+    if args.verbose:
+        print("Extracting article information...")
     article_data = api.data
     # exit program if api retuns an empty list
     if len(article_data) == 0:
-        exit(1)
+        sys.exit(1)
+    if args.verbose:
+        print("Processing data...")
     df = ArticleTable(article_data).to_df()
     if args.truncate:
-        if ":" in args.truncate:
-            start, end = args.truncate.split(":")
-            start, end = int(start), int(end)
-        else:
-            start = 1
-            end = int(args.truncate)
-        df = df.truncate(start, end)
+        df = df.truncate(args.truncate_start, args.truncate_end)
     # sort table by column if -s flag is passed
     if args.sort:
-        # sort by multiple columns
-        if "," in args.sort:
-            columns = [col.lower() for col in args.sort.split(",")]
-            df = df.sort_values(columns)
-        # sort by a single column
-        else:
-            df = df.sort_values(args.sort)
+        df = df.sort_values(args.sort_cols)
+    # format DataFrame into a markdown table
     table = tabulate(df, tablefmt="pipe", headers="keys", numalign="center")
-    print(table)
+    # check display format
+    if args.json:
+        json_articles = [a.to_json() for a in article_data]
+        data = [json.dumps(a) for a in json_articles]
+        print(data)
+    else:
+        print(table)
 
 if __name__ == "__main__":
     main()

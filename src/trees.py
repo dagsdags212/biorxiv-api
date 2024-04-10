@@ -18,6 +18,7 @@ CONTENT_TREE = {
     "root": "div#block-system-main div.content div.main-content-wrapper div.inside",
     "title": "h1#page-title",
     "doi_url": "div.highwire-cite-metadata span.highwire-cite-metadata-doi",
+    "download_url": "div.pane-content a.article-dl-pdf-link",
     "abstract": "div.abstract p",
     "author_list": {
         "root": "div.highwire-cite-authors",

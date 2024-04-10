@@ -82,6 +82,7 @@ class ContentParser(HTMLParser):
 
     def _parse_article_content(self, soup):
         root = soup.select(self.tree["root"])[0]
+        download_url = soup.select(self.tree["download_url"])[0]["href"]
         title = root.select(self.tree["title"])[0].text
         doi_url = root.select(self.tree["doi_url"])[0].text[5:]
         abstract = root.select(self.tree["abstract"])[0].text
@@ -91,4 +92,10 @@ class ContentParser(HTMLParser):
             first_name = author_node.select(self.tree["author_list"]["first_name"])[0].string
             surname = author_node.select(self.tree["author_list"]["surname"])[0].string
             authors.append(Author(first_name, surname))
-        return Article(title, abstract, authors, doi_url)
+        return Article(
+            title=title,
+            doi_url=doi_url,
+            download_url=download_url,
+            abstract=abstract,
+            authors=authors
+        )
