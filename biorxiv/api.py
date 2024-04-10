@@ -1,8 +1,8 @@
 import asyncio
 import httpx
-from enums import Collection
-from parser import CollectionParser, ContentParser
-from trees import URL_TREE
+from biorxiv.enums import Collection
+from biorxiv.parser import CollectionParser, ContentParser
+from biorxiv.trees import URL_TREE
 
 class BiorxivApi:
     """A wrapper for sending request to the bioRxiv server."""

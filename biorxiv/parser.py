@@ -1,7 +1,7 @@
 from httpx import Response
 from bs4 import BeautifulSoup
-from classes import Author, Article
-from trees import COLLECTION_TREE, CONTENT_TREE
+from biorxiv.classes import Author, Article
+from biorxiv.trees import COLLECTION_TREE, CONTENT_TREE
 
 class HTMLParser:
     def __init__(self, responses: list[Response]) -> None:

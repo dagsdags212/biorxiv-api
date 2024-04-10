@@ -2,9 +2,9 @@ import sys
 import json
 from tabulate import tabulate
 # custom modules
-from api import BiorxivApi
-from ArgumentParser import arg_parser, process_args
-from classes import ArticleTable
+from biorxiv.api import BiorxivApi
+from biorxiv.ArgumentParser import arg_parser, process_args
+from biorxiv.classes import ArticleTable
 
 def main() -> None:
     """
